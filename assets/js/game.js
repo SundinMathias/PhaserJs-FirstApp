@@ -1,13 +1,14 @@
 var snake, apple, squareSize, score, speed,
     updateDelay, direction, new_direction,
-    addNew, cursors, scoreTextValue, speedTextValue, 
-    textStyle_Key, textStyle_Value;
+    addNew, cursors, scoreTextValue, speedTextValue; 
+    // textStyle_Key, textStyle_Value;
     
 var Game = {
     
     preload : function(){
          game.load.image("snake", "./assets/images/snake.png");
          game.load.image("apple", "./assets/images/apple.png");
+         
     },
     
     create : function(){
@@ -21,6 +22,7 @@ var Game = {
         new_direction = null;
         addNew = false;
         
+        
         cursors = game.input.keyboard.createCursorKeys();
         game.stage.backgroundColor = "#061f27";
         
@@ -29,15 +31,6 @@ var Game = {
         }
         
         this.generateApple();
-
-        textStyle_Key = { font: "bold 14px sans-serif", fill: "#46c0f9", align: "center" };
-        textStyle_Value = { font: "bold 18px sans-serif", fill: "#fff", align: "center" };
-
-        game.add.text(30, 20, "SCORE", textStyle_Key);
-        scoreTextValue = game.add.text(90, 18, score.toString(), textStyle_Value);
-       
-        game.add.text(500, 20, "SPEED", textStyle_Key);
-        speedTextValue = game.add.text(558, 18, speed.toString(), textStyle_Value);
         
     },
     
@@ -59,8 +52,7 @@ var Game = {
                 new_direction = "down";
             }
             
-        speed = Math.min(10, Math.floor(score/5));
-        speedTextValue.text = "" + speed;
+        speed = Math.min(10, Math.floor(score/2));
         
         updateDelay++;
         
@@ -117,18 +109,21 @@ var Game = {
               apple.destroy();
               this.generateApple();
               score++;
-              scoreTextValue.text = score.toString();
           }
+          
+          textHolderScore.innerHTML = "SCORE: " + score;
+          textHolderSpeed.innerHTML = "SPEED: " + speed;
       }  
     },
     
+    
+        
+        
+    
     selfCollision: function(head) {
-
-    // Check if the head of the snake overlaps with any part of the snake.
     for(var i = 0; i < snake.length - 1; i++){
         if(head.x == snake[i].x && head.y == snake[i].y){
-
-            // If so, go to game over screen.
+            apple.destroy();
             game.state.start('Game_Over');
         }
     }
@@ -137,15 +132,17 @@ var Game = {
     
     wallCollision : function(head){
         if(head.x >= 600 || head.x < 0 || head.y >= 450 || head.y < 0){ 
+            apple.destroy();
             game.state.start('Game_Over');
       } 
     },
     
+    
     generateApple : function(){
         var randomX = Math.floor(Math.random() * 40) * squareSize,
             randomY = Math.floor(Math.random() * 30) * squareSize;
-            
-        apple = game.add.sprite(randomX, randomY, "apple");    
+       
+        apple = game.add.sprite(randomX, randomY, "apple"); 
     }
     
 }    
